@@ -500,6 +500,17 @@ func TestIfLabel(t *testing.T) {
 	testScript1(SCRIPT, intToValue(0), t)
 }
 
+func TestIfMultipleLabels(t *testing.T) {
+	const SCRIPT = `
+	var x = 0;
+	xyz:abc: if (true) {
+		break xyz;
+	}
+	`
+
+	testScript1(SCRIPT, intToValue(0), t)
+}
+
 func TestBreakOutOfTry(t *testing.T) {
 	const SCRIPT = `
 	function A() {

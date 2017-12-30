@@ -56,6 +56,17 @@ func (c *compiler) compileStatement(v ast.Statement, needResult bool) {
 	}
 }
 
+func (c *compiler) compileLabeledLabelledStatement(v *ast.LabelledStatement, needResult bool, label string) {
+	c.block = &block{
+		// TODO: Define label type?
+		//typ: blockBranch,
+		label: label,
+		outer: c.block,
+	}
+	c.compileLabeledStatement(v, needResult)
+	c.leaveBlock()
+}
+
 func (c *compiler) compileLabeledStatement(v *ast.LabelledStatement, needResult bool) {
 	label := v.Label.Name
 	for b := c.block; b != nil; b = b.outer {
@@ -78,6 +89,8 @@ func (c *compiler) compileLabeledStatement(v *ast.LabelledStatement, needResult 
 		c.compileLabeledIfStatement(s, needResult, label)
 	case *ast.SwitchStatement:
 		c.compileLabeledSwitchStatement(s, needResult, label)
+	case *ast.LabelledStatement:
+		c.compileLabeledLabelledStatement(s, needResult, label)
 	default:
 		c.compileStatement(v.Statement, needResult)
 	}
